@@ -10,6 +10,25 @@
 
     const STATE_TAGS = ["muv_data", "think", "analysis", "reasoning", "hidden", "scratchpad"];
 
+    const HUD_TEXT = {
+        title: '冒險者狀態面板',
+        level: '等級',
+        hp: '生命值',
+        mp: '魔力值',
+        hunger: '飢餓度',
+        valis: '法利',
+        weight: '負重',
+        team: '隊伍',
+        fam: '恩惠',
+        skill: '技能',
+        magic: '魔法',
+        inventory: '背包',
+        equipment: '裝備',
+        stats: '能力值',
+        unknown: '未知',
+        location: '目前位置'
+    };
+
     function escapeHTML(value) {
         return String(value)
             .replaceAll('&', '&amp;')
@@ -38,41 +57,48 @@
         return { label: `${current}/${max}`, percent: Math.max(0, Math.min(100, (current / max) * 100)) };
     }
 
-    function renderStatCard({ level, hp, valis, weight, inventory, event }) {
+    function renderStatCard({ level, hp, mp, hunger, valis, weight, inventory, event, team, fan, skill, magic, equipment, location, stats }) {
         const hpState = parseHp(hp);
         const inventoryHtml = inventory.length
             ? inventory.map(item => `<span class="muv-pill">${escapeHTML(item)}</span>`).join('')
-            : '<span class="muv-empty">Empty</span>';
+            : `<span class="muv-empty">${HUD_TEXT.unknown}</span>`;
+
+        const infoRow = (label, value) => `
+            <div class="muv-stat-row">
+                <span class="muv-stat-label">${label}</span>
+                <span class="muv-stat-value">${escapeHTML(safeText(value, HUD_TEXT.unknown))}</span>
+            </div>
+        `;
 
         return `
             <section class="muv-rendered-panel ${event === 'LevelUp' ? 'muv-levelup-anim' : ''}">
                 <header class="muv-panel-header">
-                    <div class="muv-panel-kicker">Orario Guild Interface</div>
-                    <div class="muv-panel-title">Adventurer Status</div>
+                    <div class="muv-panel-kicker">地城邂逅角色狀態</div>
+                    <div class="muv-panel-title">${HUD_TEXT.title}</div>
                 </header>
                 <div class="muv-panel-grid">
-                    <div class="muv-stat-card">
-                        <span class="muv-stat-label">Level</span>
-                        <strong class="muv-stat-value">${escapeHTML(safeText(level, '1'))}</strong>
-                    </div>
+                    <div class="muv-stat-card">${infoRow(HUD_TEXT.level, level)}</div>
+                    <div class="muv-stat-card">${infoRow(HUD_TEXT.valis, valis)}</div>
                     <div class="muv-stat-card muv-stat-card-wide">
                         <div class="muv-stat-row">
-                            <span class="muv-stat-label">HP</span>
+                            <span class="muv-stat-label">${HUD_TEXT.hp}</span>
                             <span class="muv-stat-value muv-hp-text">${escapeHTML(hpState.label)}</span>
                         </div>
                         <div class="muv-bar-container"><div class="muv-hp-bar" style="width:${hpState.percent}%"></div></div>
                     </div>
-                    <div class="muv-stat-card">
-                        <span class="muv-stat-label">Valis</span>
-                        <strong class="muv-stat-value">${escapeHTML(safeText(valis, '0'))}</strong>
-                    </div>
-                    <div class="muv-stat-card">
-                        <span class="muv-stat-label">Weight</span>
-                        <strong class="muv-stat-value">${escapeHTML(safeText(weight, '0/50 kg'))}</strong>
-                    </div>
+                    <div class="muv-stat-card">${infoRow(HUD_TEXT.mp, mp)}</div>
+                    <div class="muv-stat-card">${infoRow(HUD_TEXT.hunger, hunger)}</div>
+                    <div class="muv-stat-card">${infoRow(HUD_TEXT.weight, weight)}</div>
+                    <div class="muv-stat-card muv-stat-card-wide">${infoRow(HUD_TEXT.team, team)}</div>
+                    <div class="muv-stat-card muv-stat-card-wide">${infoRow(HUD_TEXT.fam, fan)}</div>
+                    <div class="muv-stat-card muv-stat-card-wide">${infoRow(HUD_TEXT.skill, skill)}</div>
+                    <div class="muv-stat-card muv-stat-card-wide">${infoRow(HUD_TEXT.magic, magic)}</div>
+                    <div class="muv-stat-card muv-stat-card-wide">${infoRow(HUD_TEXT.equipment, equipment)}</div>
+                    <div class="muv-stat-card muv-stat-card-wide">${infoRow(HUD_TEXT.location, location)}</div>
+                    <div class="muv-stat-card muv-stat-card-wide">${infoRow(HUD_TEXT.stats, stats)}</div>
                 </div>
                 <section class="muv-inventory-box">
-                    <div class="muv-inv-title">Inventory</div>
+                    <div class="muv-inv-title">${HUD_TEXT.inventory}</div>
                     <div class="muv-inv-content">${inventoryHtml}</div>
                 </section>
             </section>
@@ -121,11 +147,20 @@
         return {
             level: getXmlValue(rawData, 'level'),
             hp: getXmlValue(rawData, 'hp'),
+            mp: getXmlValue(rawData, 'mp'),
+            hunger: getXmlValue(rawData, 'hunger'),
             valis: getXmlValue(rawData, 'valis'),
             weight: getXmlValue(rawData, 'weight'),
             inventory: parseInventory(getXmlValue(rawData, 'inventory')),
             event: getXmlValue(rawData, 'event'),
-            cg: getXmlValue(rawData, 'cg')
+            cg: getXmlValue(rawData, 'cg'),
+            team: getXmlValue(rawData, 'team'),
+            fan: getXmlValue(rawData, 'fan'),
+            skill: getXmlValue(rawData, 'skill'),
+            magic: getXmlValue(rawData, 'magic'),
+            equipment: getXmlValue(rawData, 'equipment'),
+            location: getXmlValue(rawData, 'location'),
+            stats: getXmlValue(rawData, 'stats')
         };
     }
 
