@@ -2,7 +2,20 @@
   "name": "DanMachi_MUV_Engine",
   "display_name": "DanMachi RPG Engine & CG Overlay",
   "description": "Custom UI overlay that parses <muv_data> for stats and <cg> for Visual Novel popups.",
-  "version": "1.0",
+  "version": "1.1",
   "author": "Antigravity",
+  "render_mode": "html_template",
+  "template_engine": "ejs",
+  "style_mode": "external_css",
+  "assets": {
+    "scripts": ["index.js"],
+    "styles": ["style.css"],
+    "cg_folder": "/backgrounds/CGs",
+    "png_export_folder": "./exports/role_cards"
+  },
+  "output": {
+    "role_card_png": "./exports/role_cards/SiSioN.png",
+    "config": "./DanMachi_UI_Toggles.json"
+  },
   "requires": []
 }

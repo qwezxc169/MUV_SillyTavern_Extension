@@ -8,40 +8,90 @@
 (function () {
     console.log("[MUV] DanMachi UI Engine Initializing...");
 
-    // ==========================================
-    // 1. 初始化 DOM (側邊欄與 CG 遮罩)
-    // ==========================================
-    function initUI() {
-        // 側邊欄
-        if (!document.getElementById('muv-status-panel')) {
-            const panel = document.createElement('div');
-            panel.id = 'muv-status-panel';
-            panel.innerHTML = `
-                <div class="muv-header">✦ STATUS ✦</div>
-                <div class="muv-stat-row"><span class="muv-stat-label">Level</span><span class="muv-stat-value" id="muv-val-level">1</span></div>
-                <div class="muv-stat-row"><span class="muv-stat-label">HP</span><span class="muv-stat-value" id="muv-val-hp">100/100</span></div>
-                <div class="muv-bar-container"><div class="muv-hp-bar" id="muv-bar-hp" style="width: 100%;"></div></div>
-                <div class="muv-stat-row" style="margin-top: 10px;"><span class="muv-stat-label">Valis</span><span class="muv-stat-value" id="muv-val-valis">0</span></div>
-                <div class="muv-stat-row"><span class="muv-stat-label">Weight</span><span class="muv-stat-value" id="muv-val-weight">0/50 kg</span></div>
-                <div class="muv-inventory"><div class="muv-inventory-title">INVENTORY</div><div class="muv-inventory-grid" id="muv-val-inventory"></div></div>
-            `;
-            document.body.appendChild(panel);
-        }
+    const STATE_TAGS = ["muv_data", "think", "analysis", "reasoning", "hidden", "scratchpad"];
 
-        // CG Lightbox
+    function escapeHTML(value) {
+        return String(value)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#39;');
+    }
+
+    function safeText(value, fallback = '—') {
+        return value && String(value).trim() ? String(value).trim() : fallback;
+    }
+
+    function parseInventory(raw) {
+        return (raw || '')
+            .split(',')
+            .map(item => item.trim())
+            .filter(Boolean);
+    }
+
+    function parseHp(hp) {
+        const match = String(hp || '').match(/(\d+)\s*\/\s*(\d+)/);
+        if (!match) return { label: safeText(hp, '0/0'), percent: 0 };
+        const current = Number(match[1]);
+        const max = Number(match[2]) || 1;
+        return { label: `${current}/${max}`, percent: Math.max(0, Math.min(100, (current / max) * 100)) };
+    }
+
+    function renderStatCard({ level, hp, valis, weight, inventory, event }) {
+        const hpState = parseHp(hp);
+        const inventoryHtml = inventory.length
+            ? inventory.map(item => `<span class="muv-pill">${escapeHTML(item)}</span>`).join('')
+            : '<span class="muv-empty">Empty</span>';
+
+        return `
+            <section class="muv-rendered-panel ${event === 'LevelUp' ? 'muv-levelup-anim' : ''}">
+                <header class="muv-panel-header">
+                    <div class="muv-panel-kicker">Orario Guild Interface</div>
+                    <div class="muv-panel-title">Adventurer Status</div>
+                </header>
+                <div class="muv-panel-grid">
+                    <div class="muv-stat-card">
+                        <span class="muv-stat-label">Level</span>
+                        <strong class="muv-stat-value">${escapeHTML(safeText(level, '1'))}</strong>
+                    </div>
+                    <div class="muv-stat-card muv-stat-card-wide">
+                        <div class="muv-stat-row">
+                            <span class="muv-stat-label">HP</span>
+                            <span class="muv-stat-value muv-hp-text">${escapeHTML(hpState.label)}</span>
+                        </div>
+                        <div class="muv-bar-container"><div class="muv-hp-bar" style="width:${hpState.percent}%"></div></div>
+                    </div>
+                    <div class="muv-stat-card">
+                        <span class="muv-stat-label">Valis</span>
+                        <strong class="muv-stat-value">${escapeHTML(safeText(valis, '0'))}</strong>
+                    </div>
+                    <div class="muv-stat-card">
+                        <span class="muv-stat-label">Weight</span>
+                        <strong class="muv-stat-value">${escapeHTML(safeText(weight, '0/50 kg'))}</strong>
+                    </div>
+                </div>
+                <section class="muv-inventory-box">
+                    <div class="muv-inv-title">Inventory</div>
+                    <div class="muv-inv-content">${inventoryHtml}</div>
+                </section>
+            </section>
+        `;
+    }
+
+    function initUI() {
         if (!document.getElementById('cg-overlay')) {
             const overlay = document.createElement('div');
             overlay.id = 'cg-overlay';
             overlay.className = 'cg-lightbox-overlay';
             overlay.innerHTML = `
-                <img class="cg-lightbox-img" src="" alt="CG">
-                <div class="cg-close-text">點擊任意處關閉</div>
+                <figure class="cg-lightbox-frame">
+                    <img class="cg-lightbox-img" src="" alt="CG">
+                    <figcaption class="cg-close-text">點擊任意處關閉</figcaption>
+                </figure>
             `;
             document.body.appendChild(overlay);
-
-            overlay.addEventListener('click', () => {
-                overlay.classList.remove('active');
-            });
+            overlay.addEventListener('click', () => overlay.classList.remove('active'));
         }
     }
 
@@ -52,8 +102,8 @@
         const overlay = document.getElementById('cg-overlay');
         if (!overlay) return;
         const img = overlay.querySelector('.cg-lightbox-img');
-        
-        // 針對 TauriTavern：圖片已放置於 content/backgrounds/CGs
+        if (!img || !filename) return;
+
         img.src = `/backgrounds/CGs/${filename}`;
         overlay.classList.add('active');
     }
@@ -64,86 +114,43 @@
         return match ? match[1].trim() : null;
     }
 
-    // ==========================================
-    // 3. 解析器核心邏輯
-    // ==========================================
+    function extractPayload(html) {
+        const match = html.match(/<muv_data>([\s\S]*?)<\/muv_data>/i);
+        if (!match) return null;
+        const rawData = match[1];
+        return {
+            level: getXmlValue(rawData, 'level'),
+            hp: getXmlValue(rawData, 'hp'),
+            valis: getXmlValue(rawData, 'valis'),
+            weight: getXmlValue(rawData, 'weight'),
+            inventory: parseInventory(getXmlValue(rawData, 'inventory')),
+            event: getXmlValue(rawData, 'event'),
+            cg: getXmlValue(rawData, 'cg')
+        };
+    }
+
     function processMessageNode(mesNode) {
         const textNode = mesNode.querySelector('.mes_text');
         if (!textNode) return;
 
         let html = textNode.innerHTML;
-        let modified = false;
+        const payload = extractPayload(html);
+        if (!payload) return;
 
-        // A. 處理視覺小說 CG 標籤
-        const cgRegex = /<cg>(.*?)<\/cg>/g;
-        let cgMatch;
-        while ((cgMatch = cgRegex.exec(html)) !== null) {
-            const filename = cgMatch[1].trim();
-            // 只有最新產生的訊息才觸發彈出，避免滾動歷史記錄時一直彈
-            if (!mesNode.hasAttribute('data-cg-shown')) {
-                mesNode.setAttribute('data-cg-shown', 'true');
-                setTimeout(() => triggerCG(filename), 800);
-            }
-            modified = true;
-        }
-        if (modified) {
-            html = html.replace(cgRegex, ''); // 徹底隱藏 CG 標籤
+        if (payload.cg && !mesNode.hasAttribute('data-cg-shown')) {
+            mesNode.setAttribute('data-cg-shown', 'true');
+            setTimeout(() => triggerCG(payload.cg), 500);
         }
 
-        // B. 處理 MUV 狀態列更新
-        const muvRegex = /<muv_data>([\s\S]*?)<\/muv_data>/g;
-        let muvMatch;
-        let lastEvent = null;
+        const rendered = renderStatCard(payload);
+        html = html.replace(/<muv_data>[\s\S]*?<\/muv_data>/i, `<div class="muv-hidden-data">${rendered}</div>`);
+        html = html.replace(/<cg>[\s\S]*?<\/cg>/gi, '');
 
-        while ((muvMatch = muvRegex.exec(html)) !== null) {
-            const rawData = muvMatch[1];
-            
-            // 更新狀態列
-            const level = getXmlValue(rawData, 'level');
-            const hp = getXmlValue(rawData, 'hp');
-            const valis = getXmlValue(rawData, 'valis');
-            const weight = getXmlValue(rawData, 'weight');
-            const inventoryStr = getXmlValue(rawData, 'inventory');
-            lastEvent = getXmlValue(rawData, 'event');
-
-            if (level) document.getElementById('muv-val-level').innerText = level;
-            if (valis) document.getElementById('muv-val-valis').innerText = valis;
-            if (weight) document.getElementById('muv-val-weight').innerText = weight;
-            if (hp) {
-                document.getElementById('muv-val-hp').innerText = hp;
-                try {
-                    const parts = hp.split('/');
-                    if (parts.length === 2) {
-                        const percent = (parseInt(parts[0]) / parseInt(parts[1])) * 100;
-                        document.getElementById('muv-bar-hp').style.width = percent + '%';
-                    }
-                } catch (e) {}
-            }
-            if (inventoryStr) {
-                const invContainer = document.getElementById('muv-val-inventory');
-                const items = inventoryStr.split(',').map(i => i.trim()).filter(i => i);
-                invContainer.innerHTML = items.length > 0 
-                    ? items.map(item => `<div class="muv-item"><span>${item}</span></div>`).join('')
-                    : `<div class="muv-item"><span style="color:#888;">Empty</span></div>`;
-            }
-            modified = true;
-        }
-
-        // 隱藏原始 MUV 數據
-        if (html.includes('<muv_data>')) {
-            html = html.replace(muvRegex, '<div class="muv-hidden-data" style="display:none;">$&</div>');
-            modified = true;
-        }
-
-        // 若有升級事件，加上特效
-        if (lastEvent === 'LevelUp') {
+        if (payload.event === 'LevelUp') {
             mesNode.classList.add('level-up-event');
         }
 
-        // 寫回 DOM
-        if (modified) {
-            textNode.innerHTML = html;
-        }
+        textNode.innerHTML = html;
     }
 
     // ==========================================
@@ -161,18 +168,17 @@
                 mutation.addedNodes.forEach((node) => {
                     if (node.nodeType === 1 && node.classList.contains('mes')) {
                         processMessageNode(node);
+                    } else if (node.nodeType === 1 && node.querySelectorAll) {
+                        node.querySelectorAll('.mes').forEach(processMessageNode);
                     }
                 });
             });
         });
 
         observer.observe(chatContainer, { childList: true, subtree: true });
-        
-        // 處理已存在的歷史訊息
         document.querySelectorAll('.mes').forEach(processMessageNode);
     }
 
-    // 啟動
     initUI();
     startObserver();
 
