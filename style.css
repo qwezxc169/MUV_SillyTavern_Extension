@@ -1,34 +1,40 @@
-/* DanMachi full Chinese HUD */
-:root {
-  --gold: #e6c36a;
-  --paper: #efe4c7;
-  --ink: #2a1f12;
-  --shadow: rgba(0,0,0,.45);
+/* JS Slash Runner style — DanMachi parchment UI */
+:root{
+  --bg:#0c1017;
+  --panel:#111722;
+  --paper:#efe1bc;
+  --ink:#2b2014;
+  --gold:#e7c76c;
+  --gold2:#c79d44;
+  --line:rgba(231,199,108,.18);
+  --shadow:0 20px 48px rgba(0,0,0,.48);
 }
 
-.plot-frame{margin:12px 0;padding:18px 16px;background:linear-gradient(180deg,rgba(62,46,25,.92),rgba(39,28,16,.94));border:1px solid rgba(230,195,106,.28);border-radius:16px;box-shadow:0 16px 40px var(--shadow);position:relative;overflow:hidden}
-.plot-frame::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.03),rgba(255,255,255,.03) 1px,transparent 1px,transparent 10px);pointer-events:none;opacity:.3}
-.plot-scroll{background:linear-gradient(180deg,#f1dfb8,#e7cf9d);border:1px solid rgba(90,66,31,.35);border-radius:12px;padding:16px 18px;color:var(--ink);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)}
-.plot-scroll-title{font-weight:800;letter-spacing:2px;color:#7b541b;margin-bottom:10px;border-bottom:1px solid rgba(123,84,27,.2);padding-bottom:8px}
-.plot-scroll-body{line-height:1.9;font-size:15px}
-
-.k-hud{background:linear-gradient(180deg,rgba(14,18,28,.94),rgba(8,12,18,.96));border:1px solid rgba(230,195,106,.28);border-radius:18px;padding:14px;box-shadow:0 18px 42px var(--shadow);color:#f2ead7;font-family:"Microsoft JhengHei","Segoe UI",sans-serif}
-.k-hud-head{padding-bottom:10px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.08)}
-.k-hud-name{font-size:22px;font-weight:800;color:#ffd76a}
-.k-hud-sub{font-size:12px;letter-spacing:2px;color:#b49d63;margin-top:4px}
-.k-hud-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.k-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:11px 12px}
-.k-card span{display:block;font-size:11px;letter-spacing:2px;color:#b8a67b;margin-bottom:5px;text-transform:uppercase}
-.k-card strong{font-size:15px;color:#fff}
-.k-wide{grid-column:1/-1}
-.k-meter{height:10px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;margin-top:8px}
-.k-fill{height:100%;width:100%;border-radius:inherit}
-.k-fill.hp{background:linear-gradient(90deg,#ff6a6a,#ffbe70)}
-.k-fill.mp{background:linear-gradient(90deg,#67a8ff,#9be7ff)}
-.k-cg-wrap{margin-top:12px}
-.k-cg{max-width:100%;border-radius:16px;border:1px solid rgba(230,195,106,.35);box-shadow:0 18px 38px rgba(0,0,0,.48);cursor:pointer}
-.k-cg-full{position:fixed;inset:0;max-width:none;max-height:none;width:100vw;height:100vh;object-fit:contain;background:rgba(0,0,0,.92);z-index:99999;border-radius:0;border:none}
-.k-action-hint{margin-top:12px;padding:10px 12px;border:1px solid rgba(230,195,106,.22);border-radius:12px;color:#ffd76a;background:rgba(255,255,255,.03);font-weight:700;letter-spacing:2px;text-align:center}
-.muv-hidden-data{display:none!important}
-.mes.level-up-event .mes_text{animation:levelUpGlow 2.8s ease-in-out;border-radius:14px}
-@keyframes levelUpGlow{0%,100%{box-shadow:0 0 0 rgba(255,215,106,0)}45%{box-shadow:0 0 30px rgba(255,215,106,.42)}}
+body{background:var(--bg);}
+#dm-js-slash-root{padding:14px;color:#f4ecd8;font-family:"Microsoft JhengHei","Segoe UI",sans-serif}
+.dm-shell{max-width:1100px;margin:0 auto;background:linear-gradient(180deg,rgba(15,20,30,.96),rgba(9,12,18,.98));border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:16px}
+.dm-topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.08)}
+.dm-kicker{font-size:11px;letter-spacing:3px;color:#b7a26e;text-transform:uppercase}
+.dm-name{font-size:28px;font-weight:800;color:var(--gold);margin-top:2px}
+.dm-online{font-size:12px;letter-spacing:2px;color:#8fdc9a;margin-top:8px}
+.dm-scroll{margin-top:14px;background:linear-gradient(180deg,#f4e2bc,#e8cf98);border:1px solid rgba(100,74,33,.35);border-radius:16px;padding:16px 18px;color:var(--ink);position:relative;overflow:hidden}
+.dm-scroll::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.03),rgba(0,0,0,.03) 1px,transparent 1px,transparent 12px);opacity:.45;pointer-events:none}
+.dm-scroll-head{font-weight:800;letter-spacing:2px;color:#7c5320;margin-bottom:10px;border-bottom:1px solid rgba(124,83,32,.18);padding-bottom:8px}
+.dm-scroll-body{line-height:1.95;font-size:15px}
+.dm-hud{margin-top:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:18px;padding:14px}
+.dm-hud-title{font-size:12px;letter-spacing:2px;color:#b7a26e;text-transform:uppercase;margin-bottom:10px}
+.dm-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dm-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:11px 12px}
+.dm-card.wide{grid-column:1/-1}
+.dm-card span{display:block;font-size:11px;letter-spacing:2px;color:#b8a67b;margin-bottom:5px;text-transform:uppercase}
+.dm-card strong{font-size:15px;color:#fff;line-height:1.6}
+.dm-fate{margin-top:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:18px;padding:14px}
+.dm-fate-head{font-size:12px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:12px;text-align:center}
+.dm-choices{display:grid;grid-template-columns:1fr;gap:10px}
+.dm-choice{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;border:1px solid rgba(231,199,108,.16);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));color:#f6efe0;border-radius:14px;padding:12px 14px;cursor:pointer;transition:.15s ease;box-shadow:0 8px 18px rgba(0,0,0,.2)}
+.dm-choice:hover{transform:translateY(-1px);border-color:rgba(231,199,108,.34);background:rgba(255,255,255,.06)}
+.dm-choice-icon{font-size:20px;line-height:1.2}
+.dm-choice-text{display:flex;flex-direction:column;gap:4px}
+.dm-choice-title{font-weight:800;color:var(--gold)}
+.dm-choice-desc{font-size:13px;color:#d9cfba;line-height:1.45}
+@media (max-width:720px){.dm-grid{grid-template-columns:1fr}.dm-name{font-size:22px}}

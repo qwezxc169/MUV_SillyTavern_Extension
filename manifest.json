@@ -1,11 +1,11 @@
 {
   "name": "DanMachi_MUV_Engine",
-  "display_name": "DanMachi RPG Engine & CG Overlay",
-  "description": "Custom UI overlay that parses <muv_data> for stats and <cg> for Visual Novel popups.",
-  "version": "1.1",
+  "display_name": "DanMachi JS Slash Runner Style",
+  "description": "Script-driven DanMachi UI renderer with Chinese parchment scene card, Chinese HUD, and interactive destiny choices.",
+  "version": "2.0",
   "author": "Antigravity",
-  "render_mode": "html_template",
-  "template_engine": "ejs",
+  "render_mode": "js_slash_runner_style",
+  "template_engine": "html",
   "style_mode": "external_css",
   "assets": {
     "scripts": ["index.js"],
@@ -14,8 +14,8 @@
     "png_export_folder": "./exports/role_cards"
   },
   "output": {
-    "role_card_png": "./exports/role_cards/SiSioN.png",
-    "config": "./DanMachi_UI_Toggles.json"
+    "role_card_png": "./exports/role_cards/danmachi_card_fixed.png",
+    "config": "./DanMachi_Regex.json"
   },
   "requires": []
 }
