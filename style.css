@@ -28,6 +28,7 @@
 .k-cg-wrap{margin-top:12px}
 .k-cg{max-width:100%;border-radius:16px;border:1px solid rgba(230,195,106,.35);box-shadow:0 18px 38px rgba(0,0,0,.48);cursor:pointer}
 .k-cg-full{position:fixed;inset:0;max-width:none;max-height:none;width:100vw;height:100vh;object-fit:contain;background:rgba(0,0,0,.92);z-index:99999;border-radius:0;border:none}
+.k-action-hint{margin-top:12px;padding:10px 12px;border:1px solid rgba(230,195,106,.22);border-radius:12px;color:#ffd76a;background:rgba(255,255,255,.03);font-weight:700;letter-spacing:2px;text-align:center}
 .muv-hidden-data{display:none!important}
 .mes.level-up-event .mes_text{animation:levelUpGlow 2.8s ease-in-out;border-radius:14px}
 @keyframes levelUpGlow{0%,100%{box-shadow:0 0 0 rgba(255,215,106,0)}45%{box-shadow:0 0 30px rgba(255,215,106,.42)}}
