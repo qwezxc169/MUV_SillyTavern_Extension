@@ -1,0 +1,8 @@
+{
+  "name": "DanMachi_MUV_Engine",
+  "display_name": "DanMachi RPG Engine & CG Overlay",
+  "description": "Custom UI overlay that parses <muv_data> for stats and <cg> for Visual Novel popups.",
+  "version": "1.0",
+  "author": "Antigravity",
+  "requires": []
+}

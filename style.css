@@ -1,0 +1,193 @@
+/* =========================================
+   地城邂逅：世界卡 MUV 側邊欄面板樣式
+   ========================================= */
+
+/* MUV 浮動面板 (固定於聊天欄右側) */
+#muv-status-panel {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 280px;
+    background: rgba(15, 20, 30, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(212, 175, 55, 0.4); /* 暗金色邊框 */
+    border-radius: 12px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), 0 0 15px rgba(212, 175, 55, 0.2);
+    color: #e0e0e0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 15px;
+    z-index: 9999;
+    transition: all 0.3s ease;
+}
+
+#muv-status-panel:hover {
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7), 0 0 25px rgba(212, 175, 55, 0.4);
+    border: 1px solid rgba(212, 175, 55, 0.8);
+}
+
+/* 標題與公會標誌區 */
+.muv-header {
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    font-size: 18px;
+    color: #ffd700; /* 金色 */
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+}
+
+/* 屬性列 (HP, 等級, 法利) */
+.muv-stat-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.muv-stat-label {
+    color: #a0aab5;
+}
+
+.muv-stat-value {
+    font-weight: bold;
+    color: #ffffff;
+}
+
+/* 生命值與經驗條 */
+.muv-bar-container {
+    width: 100%;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    margin-top: 5px;
+    overflow: hidden;
+}
+
+.muv-hp-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #ff416c, #ff4b2b);
+    width: 100%;
+    transition: width 0.5s ease-in-out;
+}
+
+.muv-exp-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #00b4db, #0083b0);
+    width: 0%;
+    transition: width 0.5s ease-in-out;
+}
+
+/* 物品欄網格 */
+.muv-inventory {
+    margin-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 10px;
+}
+
+.muv-inventory-title {
+    font-size: 12px;
+    color: #ffd700;
+    margin-bottom: 8px;
+}
+
+.muv-inventory-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 13px;
+}
+
+.muv-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 5px 8px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* =========================================
+   對話框特效 (直接作用於對話欄內)
+   ========================================= */
+
+/* 隱藏生硬的原始數據標籤 */
+.muv-hidden-data {
+    display: none !important;
+}
+
+/* 升級特效 (神血流動閃耀) */
+@keyframes levelUpGlow {
+    0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0); border-color: transparent; }
+    50% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), inset 0 0 20px rgba(255, 215, 0, 0.4); border-color: rgba(255, 215, 0, 1); }
+    100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0); border-color: transparent; }
+}
+
+.mes.level-up-event .mes_text {
+    animation: levelUpGlow 3s ease-in-out;
+    border-radius: 8px;
+    border: 1px solid transparent;
+}
+
+/* 神聖文字翻譯特效 */
+.hieroglyph-text {
+    font-family: "Courier New", Courier, monospace;
+    color: #00e5ff;
+    text-shadow: 0 0 5px #00e5ff;
+    letter-spacing: 1px;
+}
+
+/* =========================================
+   視覺小說 CG 彈出特效 (Lightbox)
+   ========================================= */
+
+.cg-lightbox-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 99999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+.cg-lightbox-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.cg-lightbox-img {
+    max-width: 90vw;
+    max-height: 90vh;
+    border: 2px solid #ffd700;
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+    border-radius: 4px;
+    transform: scale(0.95);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    object-fit: contain;
+}
+
+.cg-lightbox-overlay.active .cg-lightbox-img {
+    transform: scale(1);
+}
+
+.cg-close-text {
+    position: absolute;
+    bottom: 20px;
+    color: rgba(255,255,255,0.5);
+    font-size: 14px;
+    letter-spacing: 2px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.3; }
+}
